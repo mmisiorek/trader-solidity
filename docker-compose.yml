@@ -1,0 +1,11 @@
+version: '2'
+
+services:
+  trader_solidity:
+    build: ./
+    volumes: 
+      - ./:/home/solidity/code
+    tty: true
+    stdin_open: true 
+    command: ["ganache-cli"]
+    
