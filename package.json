@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "test": "jasmine"
+    "test": "jasmine",
+    "build": "node bin/build.js"
   },
   "dependencies": {
     "fs-extra": "^5.0.0"
