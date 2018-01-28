@@ -13,7 +13,7 @@ contract('Trade', function(accounts) {
 	it('should calculate remaining realization correctly', function() {
 		return Trade.deployed(1000, 2000, "b").then(function(trade) {
 			
-			return trade.getRemainingRealization.call(); 
+			return trade.getRemainingRealization.call(); x
 			
 		}).then(function(retVal) {
 			assert.equal(retVal.toNumber(), 2000, "The remaining realization value is not correct.");

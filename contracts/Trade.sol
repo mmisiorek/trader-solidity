@@ -45,7 +45,7 @@ contract Trade {
         isRealizationPaid = false;
     }
     
-    function registerPayment(uint256 val, address owner) internal returns(uint256) {
+    function registerPayment(uint256 val, address initialSender) internal returns(uint256) {
         uint remainingValue = val;
         uint valueToOwner = 0; 
         

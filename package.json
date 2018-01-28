@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "test": "jasmine"
+  },
+  "dependencies": {
+    "fs-extra": "^5.0.0"
+  }
+}
