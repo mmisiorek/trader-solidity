@@ -7,7 +7,7 @@ contract SubaccountsOnlyTrade is DestroyableTrade {
     
     address[] internal buyerStorages;
     
-    function SubaccountsOnlyTrade(uint aA, uint rA, string _id) payable Trade(aA, rA, _id) {
+    function SubaccountsOnlyTrade(uint aA, uint rA, string _id) public payable Trade(aA, rA, _id) {
         buyerStorages = new address[](0);
     }
     
@@ -33,7 +33,7 @@ contract SubaccountsOnlyTrade is DestroyableTrade {
         return registerPayment(remaining, msg.sender); 
     }
     
-    function() payable {
+    function() public payable {
         msg.sender.transfer(msg.value); 
     }
     

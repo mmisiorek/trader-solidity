@@ -12,7 +12,7 @@ class SolFileTracker {
 		this.files[solFile.fileName] = solFile;
 		
 		for(let subSolFile of solFile.imports) {
-			if(!this.files[subSolFile.fileName]) {
+			if(!this.hasAlreadyFile(subSolFile.fileName)) {
 				this.track(subSolFile);
 			}
 		}
@@ -26,6 +26,12 @@ class SolFileTracker {
 		return Object.keys(this.files).map(function(key) {
 			return self.files[key]; 
 		}).reverse();
+	}
+	
+	hasAlreadyFile(fileName) {
+		fileName = fileName.replace("./", ""); 
+		
+		return fileName in this.files;
 	}
 }
 

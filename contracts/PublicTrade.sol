@@ -7,7 +7,7 @@ contract PublicTrade is DestroyableTrade {
     address[] public senders;
     mapping(address => uint) public amounts;
     
-    function PublicTrade(uint aA, uint rA, string _id) payable Trade(aA, rA, _id) {
+    function PublicTrade(uint aA, uint rA, string _id) public payable Trade(aA, rA, _id) {
         senders = new address[](0);
     }
     
@@ -64,7 +64,7 @@ contract PublicTrade is DestroyableTrade {
         return registerPayment(msg.value, msg.sender);
     }
     
-    function() payable {
+    function() public payable {
         this.pay(msg.value, msg.sender); 
     }
     

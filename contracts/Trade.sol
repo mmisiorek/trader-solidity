@@ -32,7 +32,7 @@ contract Trade {
         _;
     }
     
-    function Trade(uint aA, uint rA, string _id) payable {
+    function Trade(uint aA, uint rA, string _id) public payable {
         owner = msg.sender;
         id = _id; 
         advanceAmount = aA;
@@ -48,6 +48,8 @@ contract Trade {
     function registerPayment(uint256 val, address initialSender) internal returns(uint256) {
         uint remainingValue = val;
         uint valueToOwner = 0; 
+        
+        initialSender = 0;
         
         if(remainingValue > 0 && !isAdvancedPaid) {
             uint remainingAdvance = getRemainingAdvance();

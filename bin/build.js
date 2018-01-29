@@ -5,59 +5,16 @@ const FileWriter = require('./caching/FileWriter.js');
 const CacheBuilder = require('./caching/CacheBuilder.js');
 const SolFileRegistry = require('./caching/SolFileRegistry.js');
 
+const SolcjsPromiseBuilder = require('./promiseBuilders/SolcjsPromiseBuilder.js');
+const CommandExecutor = require('./promiseBuilders/CommandExecutor.js');
+const DirectoryReader = require('./promiseBuilders/DirectoryReader.js');
+const FileRemover = require('./promiseBuilders/FileRemover.js');
+const FileMover = require('./promiseBuilders/FileMover.js');
+const DirectoryCreator = require('./promiseBuilders/DirectoryCreator.js');
+
 const contractsDir = __dirname+'/../contracts';
 const cacheDir = __dirname+'/../cache'; 
 const buildDir = __dirname+'/../build'; 
-
-function createAbiPromise(file, outputDir) {
-	return new Promise(function(resolve, reject) {
-		const cmd = 'solcjs '+file+" --abi --optimize -o "+outputDir+"/tmp";
-		
-		console.log("Executing: "+cmd );
-		exec(cmd, function(err, stdout, stderr) {
-			if(err) {
-				reject(err); 
-			}
-			
-			resolve({stdout: stdout, stderr: stderr});
-		});
-	})/*.then(function(obj) {
-		
-		return new Promise(function(resolve, reject) {
-			fs.readDir(outputDir+"/tmp", function(err, files) {
-				if(err) {
-					reject(err);
-				}
-				
-				
-			});
-			
-			return obj;
-		});
-		
-	});*/
-}
-
-function createBinPromise(file, outputDir) {
-	return new Promise(function(resolve, reject) {
-		const cmd = 'solcjs '+file+' --bin --optimize -o '+outputDir;
-		
-		console.log("Executing: "+cmd); 
-		exec(cmd, function(err, stdout, stderr) {
-			if(err) {
-				reject(err);
-			}
-			
-			resolve({stdout: stdout, stderr: stderr});
-		});
-	});
-}
-
-
-
-function createCacheFile(files) {
-	
-}
 
 (function() {
 	
@@ -66,6 +23,11 @@ function createCacheFile(files) {
 	
 	const fReader = new FileReader();
 	const fWriter = new FileWriter();
+	const cmdExecutor = new CommandExecutor();
+	const dirReader = new DirectoryReader();
+	const fMover = new FileMover();
+	const fRemover = new FileRemover();
+	const dirCreator = new DirectoryCreator();
 	
 	const cacheBuilder = new CacheBuilder(cacheDir, fWriter); 
 	
@@ -80,19 +42,40 @@ function createCacheFile(files) {
 		}
 	}
 	
-	for(let file of entryPoints) {
+	for(let i = 0; i < entryPoints.length; i++) {
+		const file = entryPoints[i];
 		const registry = new SolFileRegistry(contractsDir, fReader);
+		const isFirstFile = (i===0);
 		
 		promiseChain = promiseChain.then(function() {
 			return registry.getEntrySolFilePromise(file);
 		}).then(function(solFile) {
 			return cacheBuilder.buildCachePromise(solFile);
 		}).then(function(cacheFileName) {
-			return createAbiPromise(cacheFileName, buildABIDir).then(function() {
-				return cacheFileName;
+			const builder = new SolcjsPromiseBuilder(cmdExecutor, dirReader, fMover, fRemover, dirCreator, 'abi', cacheFileName, buildABIDir);
+			
+			builder.setChangeFilenames(true)
+					.setDeleteTemporaryDirAfterUse(true)
+					.setReturnCreatedFilenames(true)
+					.setRemoveBuildDirectoryFirst(isFirstFile);
+			
+			return builder.build().then(function(createdFiles) {
+				return {
+					cacheFileName: cacheFileName,
+					createdFiles: createdFiles
+				};
 			});
-		}).then(function(cacheFileName) {
-			return createBinPromise(cacheFileName, buildBINDir);
+		}).then(function(obj) {
+			const builder = new SolcjsPromiseBuilder(cmdExecutor, dirReader, fMover, fRemover, dirCreator, 'bin', obj.cacheFileName, buildBINDir);
+			
+			builder.setChangeFilenames(true)
+					.setDeleteTemporaryDirAfterUse(true)
+					.setReturnCreatedFilenames(true)
+					.setRemoveBuildDirectoryFirst(isFirstFile);
+			
+			return builder.build().then(function(createdFiles) {
+				return createdFiles.concat(obj.createdFiles);
+			});
 		});
 	}
 	

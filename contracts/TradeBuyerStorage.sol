@@ -33,36 +33,36 @@ contract TradeBuyerStorage {
         _;
     }
     
-    function TradeBuyerStorage() payable {
+    function TradeBuyerStorage() public payable {
         tradeContractCreator = msg.sender;
         hasOwner = false;
     }
     
-    function() payable onlyOwnerIfExists {
+    function() public payable onlyOwnerIfExists {
         owner = msg.sender;
         hasOwner = true;
     }
     
-    function currentBalance() view returns (uint256) {
+    function currentBalance() public view returns (uint256) {
         return this.balance;
     }
     
-    function pay() payable onlyOwnerIfExists returnValueToOwner returns(uint256) {
+    function pay() public payable onlyOwnerIfExists returnValueToOwner returns(uint256) {
         SubaccountsOnlyTrade trade = SubaccountsOnlyTrade(tradeContractCreator); 
         return trade.pay(msg.value);
     }
     
-    function payAdvance() payable onlyOwnerIfExists returnValueToOwner returns(uint256) {
+    function payAdvance() public payable onlyOwnerIfExists returnValueToOwner returns(uint256) {
         SubaccountsOnlyTrade trade = SubaccountsOnlyTrade(tradeContractCreator); 
         return trade.payAdvance();
     }
     
-    function payRealization() payable onlyOwnerIfExists returnValueToOwner returns(uint256) {
+    function payRealization() public payable onlyOwnerIfExists returnValueToOwner returns(uint256) {
         SubaccountsOnlyTrade trade = SubaccountsOnlyTrade(tradeContractCreator);
         return trade.payRealization(); 
     }
     
-    function returnMoneyAndDestroy() payable onlyOwnerIfExists returnValueToOwner returns(uint256) {
+    function returnMoneyAndDestroy() public payable onlyOwnerIfExists returnValueToOwner returns(uint256) {
         uint256 weisToReturn = msg.value+this.balance;
         owner.transfer(weisToReturn);
         selfdestruct(owner); 
