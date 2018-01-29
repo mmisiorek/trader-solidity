@@ -5,7 +5,7 @@ import "./DestroyableTrade.sol";
 
 contract SubaccountsOnlyTrade is DestroyableTrade {
     
-    address[] internal buyerStorages;
+    address[] public buyerStorages;
     
     function SubaccountsOnlyTrade(uint aA, uint rA, string _id) public payable Trade(aA, rA, _id) {
         buyerStorages = new address[](0);
