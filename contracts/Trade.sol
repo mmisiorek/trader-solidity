@@ -10,7 +10,7 @@ contract Trade {
     
     uint public advancePaid;
     uint public realizationPaid;
-    
+
     bool isAdvancedPaid;
     bool isRealizationPaid;
     
@@ -54,7 +54,7 @@ contract Trade {
         if(remainingValue > 0 && !isAdvancedPaid) {
             uint remainingAdvance = getRemainingAdvance();
             uint smallerAValue = remainingValue > remainingAdvance ? remainingAdvance : remainingValue;
-            
+
             remainingValue = remainingValue-smallerAValue;
             advancePaid = advancePaid+smallerAValue;
             
@@ -65,7 +65,7 @@ contract Trade {
                 AdvanceHasBeenPaid(id);
             }
         }
-        
+
         if(remainingValue > 0 && !isRealizationPaid) {
             uint remainingRealization = getRemainingRealization();
             uint smallerRValue = remainingValue > remainingRealization ? remainingRealization : remainingValue;
@@ -109,5 +109,4 @@ contract Trade {
         
         return realizationAmount-realizationPaid; 
     }
-    
 }

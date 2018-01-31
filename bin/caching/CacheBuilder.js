@@ -51,7 +51,7 @@ class CacheBuilder {
 			const cacheFilePath = prefix+fileName;
 			const tracker = new SolFileTracker();
 			const solFiles = tracker.track(solFile);
-			
+			 
 			let fileContent = solFiles[0].getPragmaSolidity()+"\n";
 			for(let f of solFiles) {
 				fileContent += f.getContentWithoutImportsAndPragmas()+"\n";

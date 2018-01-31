@@ -48,7 +48,10 @@ contract TradeBuyerStorage {
     }
     
     function pay() public payable onlyOwnerIfExists returnValueToOwner returns(uint256) {
-        SubaccountsOnlyTrade trade = SubaccountsOnlyTrade(tradeContractCreator); 
+        SubaccountsOnlyTrade trade = SubaccountsOnlyTrade(tradeContractCreator);
+
+        tradeContractCreator.transfer(msg.value);
+
         return trade.pay(msg.value);
     }
     

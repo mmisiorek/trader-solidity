@@ -11,7 +11,7 @@ contract('Trade', function(accounts) {
 	});
 	
 	it('should calculate remaining realization correctly', function() {
-		return Trade.deployed(1000, 2000, "b").then(function(trade) {
+		return Trade.deployed().then(function(trade) {
 			
 			return trade.getRemainingRealization.call(); 
 			

@@ -10,7 +10,7 @@ services:
   
   ethereum_node:
     image: trufflesuite/ganache-cli:latest
-    command: ["node", "./build/cli.node.js", "--gasPrice=10", "--account=0x0d4e08d84dcb55af5b149a8e2aa5579dea425907ce3c8570edd1c9e2429b0a67,100000000000000000000"]
+    command: ["node", "./build/cli.node.js", "--gasPrice=10", "--account=0x0d4e08d84dcb55af5b149a8e2aa5579dea425907ce3c8570edd1c9e2429b0a67,10000000000000000000000000000000"]
     ports:
       - "8545:8545"
     

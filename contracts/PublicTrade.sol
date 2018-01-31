@@ -6,7 +6,8 @@ contract PublicTrade is DestroyableTrade {
     
     address[] public senders;
     mapping(address => uint) public amounts;
-    
+    uint public r;
+
     function PublicTrade(uint aA, uint rA, string _id) public payable Trade(aA, rA, _id) {
         senders = new address[](0);
     }
@@ -29,8 +30,8 @@ contract PublicTrade is DestroyableTrade {
     function pay() public payable unlessFinished returns(uint256) {
         initSenderInAmountsIfNeeded(msg.sender);
         amounts[msg.sender] += msg.value;
-        
-        return registerPayment(msg.value, msg.sender); 
+
+        return registerPayment(msg.value, msg.sender);
     }
     
     function pay(uint amount, address sender) public payable unlessFinished senderIsMyself returns(uint256) {
@@ -43,14 +44,14 @@ contract PublicTrade is DestroyableTrade {
     function payAdvance() public payable unlessFinished valueIsRemainingAdvance returns(uint256) {
         initSenderInAmountsIfNeeded(msg.sender);
         amounts[msg.sender] += msg.value;
-        
+
         uint overflow = msg.value-getRemainingAdvance();
         if(overflow > 0) {
-            msg.sender.transfer(overflow); 
+            msg.sender.transfer(overflow);
         }
-        
-        return registerPayment(msg.value, msg.sender); 
-    } 
+
+        return registerPayment(getRemainingAdvance(), msg.sender);
+    }
     
     function payRealization() public payable ifAdvanceIsPaid valueIsRemainingRealization returns(uint256) {
         initSenderInAmountsIfNeeded(msg.sender);
@@ -61,7 +62,7 @@ contract PublicTrade is DestroyableTrade {
             msg.sender.transfer(overflow);
         }
         
-        return registerPayment(msg.value, msg.sender);
+        return registerPayment(getRemainingRealization(), msg.sender);
     }
     
     function() public payable {
